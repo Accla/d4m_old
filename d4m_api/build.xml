@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<project name="d4m_api" default="all" basedir=".">
+  <property file="${basedir}/default_build.properties"/>
+
+  <import file="${basedir}/../d4m_api_java/build_common_targets.xml"/>
+	
+  <target name="init_local" depends="init">
+     <filter filtersfile="${base_property_file_name}"/>
+     <filter filtersfile="${full_property_file_name}"/>
+     <filter token="version_number" value="${version_number}"/>
+  
+    <ant antfile="${basedir}/../d4m_api_java/build.xml" dir="../d4m_api_java" 
+       inheritAll="false" inheritRefs="false" target="build_jar" />
+    <copy todir="${basedir}/lib" file="${basedir}/../d4m_api_java/build/dist/lib/D4M_API_JAVA.jar"/>
+
+    <copy todir="${dist.dir}">
+       <fileset dir="${basedir}">
+         <include name="docs/**"/>
+         <include name="matlab_src/**"/>
+         <include name="TEST/**"/>
+         <include name="lib/**"/>
+       </fileset>
+    </copy>  
+
+  	<!-- copy scripts into bin directory -->
+    <copy todir="${dist.dir}/bin" >
+        <fileset dir="${basedir}/scripts">
+            <include name="**"/>
+        </fileset>
+    </copy>    
+    <chmod dir="${dist.dir}/bin" perm="uag+x" includes="**/*.sh"/>
+  </target>
+
+  <target name="all" depends="clean, init_local, build_distribution" description="Build a distribution of the whole software package"/> 
+  
+
+</project>
