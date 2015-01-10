@@ -1,19 +1,29 @@
-function DB = DBsetupLLGrid(dbname);
+function DB = DBsetupLLGrid(dbname,toolspath);
 %DBsetupLLGrid: Create database binding on LLGrid.
 %Database internal function.
 %  Usage:
 %    DB = DBsetupLLGrid(group)
 %  Inputs:
 %    group = String containing name group that database lives in.
+%    toolspath = Optional input to the LLGrid tools/ directory.
+%       -Attempts to autodetect if not provided.-
 %  Outputs:
 %    DB = database binding
-
-  DBdir = fileparts(mfilename('fullpath'));   % Get DBdir.
-  fid = fopen([DBdir '/../../groups/databases/' dbname '/accumulo_user_password.txt']);
+  error(nargchk(1, 2, nargin))
+  if nargin == 1
+      DBdir = [fileparts(mfilename('fullpath')) '/../..'];   % Get tools directory.
+  else
+      if toolspath(end) == '/' || toolspath(end) == '\'
+          toolspath = toolspath(1:end-1)
+      end
+      DBdir = [toolspath];
+  end
+  fid = fopen([DBdir '/groups/databases/' dbname '/accumulo_user_password.txt']);
+  %disp([DBdir '/groups/databases/' dbname '/accumulo_user_password.txt'])
     AccumuloUserKey = fgetl(fid);
   fclose(fid);
 
-  fid = fopen([DBdir '/../../groups/databases/' dbname '/dnsname']);
+  fid = fopen([DBdir '/groups/databases/' dbname '/dnsname']);
     dnsName = fgetl(fid);
   fclose(fid);
 
