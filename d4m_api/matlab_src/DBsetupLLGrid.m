@@ -1,4 +1,4 @@
-function DB = DBsetupLLGrid(dbname,toolspath);
+function DB = DBsetupLLGrid(dbname,toolspath)
 %DBsetupLLGrid: Create database binding on LLGrid.
 %Database internal function.
 %  Usage:
@@ -9,21 +9,22 @@ function DB = DBsetupLLGrid(dbname,toolspath);
 %       -Attempts to autodetect if not provided.-
 %  Outputs:
 %    DB = database binding
-  error(nargchk(1, 2, nargin))
+  narginchk(1, 2)
   if nargin == 1
       DBdir = [fileparts(mfilename('fullpath')) '/../..'];   % Get tools directory.
   else
       if toolspath(end) == '/' || toolspath(end) == '\'
-          toolspath = toolspath(1:end-1)
+          toolspath = toolspath(1:end-1);
       end
-      DBdir = [toolspath];
+      DBdir = toolspath;
   end
-  fid = fopen([DBdir '/groups/databases/' dbname '/accumulo_user_password.txt']);
-  %disp([DBdir '/groups/databases/' dbname '/accumulo_user_password.txt'])
+  fd = filesep;
+  fid = fopen([DBdir fd 'groups' fd 'databases' fd dbname fd 'accumulo_user_password.txt']);
+  %disp([DBdir fd 'groups' fd 'databases' fd dbname fd 'accumulo_user_password.txt'])
     AccumuloUserKey = fgetl(fid);
   fclose(fid);
 
-  fid = fopen([DBdir '/groups/databases/' dbname '/dnsname']);
+  fid = fopen([DBdir fd 'groups' fd 'databases' fd dbname fd 'dnsname']);
     dnsName = fgetl(fid);
   fclose(fid);
 
@@ -41,4 +42,3 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % (c) <2010> Massachusetts Institute of Technology
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
